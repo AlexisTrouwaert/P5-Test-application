@@ -7,7 +7,6 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
-
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -26,6 +25,7 @@ public class UserTest {
 
     @Test
     public void UserSetter() {
+        LocalDateTime now = LocalDateTime.now();
         User user = new User();
         user.setId(1L);
         user.setEmail("test@test.fr");
@@ -33,24 +33,38 @@ public class UserTest {
         user.setLastName("Test");
         user.setPassword("@Test1234");
         user.setAdmin(true);
-        user.setCreatedAt(LocalDateTime.now());
-        user.setUpdatedAt(LocalDateTime.now());
+        user.setCreatedAt(now);
+        user.setUpdatedAt(now);
 
+        assertNotNull(user);
         assertEquals(1L, user.getId());
         assertEquals("test@test.fr", user.getEmail());
+        assertEquals("Test", user.getFirstName());
+        assertEquals("Test", user.getLastName());
+        assertEquals("@Test1234", user.getPassword());
+        assertTrue(user.isAdmin());
+        assertEquals(now, user.getCreatedAt());
+        assertEquals(now, user.getUpdatedAt());
     }
 
     @Test
     public void testUserBuilder(){
+        LocalDateTime now = LocalDateTime.now();
         User user = User.builder()
+                .id(1L)
                 .email("test1@test.fr")
                 .lastName("test1")
                 .firstName("test2")
                 .password("@test1234")
+                .createdAt(now)
+                .updatedAt(now)
                 .admin(true)
                 .build();
 
         assertNotNull(user);
+        assertEquals(1L, user.getId());
+        assertEquals(now, user.getCreatedAt());
+        assertEquals(now, user.getUpdatedAt());
         assertEquals("test1@test.fr", user.getEmail());
         assertEquals("test1", user.getLastName());
         assertEquals("test2", user.getFirstName());
@@ -101,6 +115,26 @@ public class UserTest {
 
         String expectedToString = "User(id=1, email=test@test.fr, lastName=test, firstName=test, password=@test1234, admin=true, createdAt=null, updatedAt=null)";
         assertEquals(expectedToString, user.toString());
+    }
+
+    @Test
+    public void UserToStringBuilder() {
+        LocalDateTime now = LocalDateTime.now();
+        User user = User.builder()
+                .id(1L)
+                .email("test1@test.fr")
+                .lastName("test1")
+                .firstName("test2")
+                .password("@test1234")
+                .createdAt(now)
+                .updatedAt(now)
+                .admin(true)
+                .build();
+
+        String UserToString = user.toString();
+
+        String expectedToString = "User(id=1, email=test1@test.fr, lastName=test1, firstName=test2, password=@test1234, admin=true, createdAt=" + now + ", updatedAt=" + now + ")";
+        assertEquals(expectedToString, UserToString);
     }
 
     @Test
