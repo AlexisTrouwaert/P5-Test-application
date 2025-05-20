@@ -82,6 +82,21 @@ public class UserTest {
     }
 
     @Test
+    public void testUserBuilderMinimal() {
+        User user = User.builder()
+                .email("test@test.fr")
+                .firstName("test")
+                .lastName("test")
+                .password("@test1234")
+                .build();
+
+        assertEquals("test@test.fr", user.getEmail());
+        assertEquals("test", user.getFirstName());
+        assertEquals("test", user.getLastName());
+        assertEquals("@test1234", user.getPassword());
+    }
+
+    @Test
     public void testUserValidation_InvalidMail(){
         User user = new User("invalid-mail", "test", "test", "@test1234", true);
 
@@ -91,7 +106,7 @@ public class UserTest {
 
     @Test
     public void testUserValidation_ExcedeMaxSize(){
-        User user = new User("t".repeat(51), "test", "test", "@test1234", true);
+        User user = new User("t".repeat(51), "test".repeat(51), "test".repeat(51), "@test1234".repeat(151), true);
 
         Set<ConstraintViolation<User>> violations = validator.validate(user);
         assertFalse(violations.isEmpty());
@@ -99,10 +114,9 @@ public class UserTest {
 
     @Test
     public void testUserEqualsHashCode() {
-        User user1 = new User("test@test.fr", "test", "test", "@test1234", true);
-        User user2 = new User("test@test.fr", "test", "test", "@test1234", true);
-        user1.setId(1L);
-        user2.setId(1L);
+        LocalDateTime now = LocalDateTime.now();
+        User user1 = new User(1L, "test@test.fr", "test", "test", "@test1234", true, now, now);
+        User user2 = new User(1L, "test@test.fr", "test", "test", "@test1234", true, now, now);
 
         assertEquals(user1, user2);
         assertEquals(user1.hashCode(), user2.hashCode());
@@ -110,10 +124,10 @@ public class UserTest {
 
     @Test
     public void UserToString() {
-        User user = new User("test@test.fr", "test", "test", "@test1234", true);
-        user.setId(1L);
+        LocalDateTime now = LocalDateTime.now();
+        User user = new User(1L, "test@test.fr", "test", "test", "@test1234", true, now ,now);
 
-        String expectedToString = "User(id=1, email=test@test.fr, lastName=test, firstName=test, password=@test1234, admin=true, createdAt=null, updatedAt=null)";
+        String expectedToString = "User(id=1, email=test@test.fr, lastName=test, firstName=test, password=@test1234, admin=true, createdAt=" + now +", updatedAt=" + now + ")";
         assertEquals(expectedToString, user.toString());
     }
 
@@ -134,6 +148,7 @@ public class UserTest {
         String UserToString = user.toString();
 
         String expectedToString = "User(id=1, email=test1@test.fr, lastName=test1, firstName=test2, password=@test1234, admin=true, createdAt=" + now + ", updatedAt=" + now + ")";
+        assertNotNull(user.toString());
         assertEquals(expectedToString, UserToString);
     }
 
