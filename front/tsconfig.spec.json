@@ -10,7 +10,8 @@
     "allowJs": true
   },
   "files": [
-    "src/polyfills.ts"
+    "src/polyfills.ts",
+    "src/test.ts"
   ],
   "include": [
     "src/**/*.spec.ts",

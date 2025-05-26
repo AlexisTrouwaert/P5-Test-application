@@ -1,32 +1,28 @@
-import { HttpClientModule } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { UserService } from '../user.service';
+import { User } from '../../interfaces/user.interface';
 import { expect } from '@jest/globals';
 
-import { UserService } from './user.service';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { User } from '../interfaces/user.interface';
-
-describe('UserService', () => {
+describe('UserService Integration', () => {
   let service: UserService;
   let httpMock: HttpTestingController;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports:[
-        HttpClientModule,
-        HttpClientTestingModule
-      ],
+      imports: [HttpClientTestingModule],  // Module Angular complet pour HTTP
       providers: [UserService]
     });
+
     service = TestBed.inject(UserService);
     httpMock = TestBed.inject(HttpTestingController);
   });
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
+  afterEach(() => {
+    httpMock.verify();  // Vérifie qu’il n’y a pas de requêtes HTTP non consommées
   });
 
-  it('should fetch a user by id', () => {
+  it('should fetch user by id and handle observable properly', (done) => {
     const mockUser: User = {
       id: 1,
       email: 'test@test.fr',
@@ -38,21 +34,23 @@ describe('UserService', () => {
       admin: false
     };
 
-    service.getById('123').subscribe(user => {
+    service.getById('abc123').subscribe(user => {
       expect(user).toEqual(mockUser);
+      done();  // Important : signale que le test asynchrone est terminé
     });
 
-    const req = httpMock.expectOne('api/user/123');
+    const req = httpMock.expectOne('api/user/abc123');
     expect(req.request.method).toBe('GET');
     req.flush(mockUser);
   });
 
-  it('should delete a user by id', () => {
-    service.delete('123').subscribe(response => {
-      expect(response).toBeTruthy(); // Ou selon ce que ton API retourne
+  it('should delete user and complete observable', (done) => {
+    service.delete('abc123').subscribe(response => {
+      expect(response).toBeTruthy();
+      done();
     });
 
-    const req = httpMock.expectOne('api/user/123');
+    const req = httpMock.expectOne('api/user/abc123');
     expect(req.request.method).toBe('DELETE');
     req.flush({ success: true });
   });
