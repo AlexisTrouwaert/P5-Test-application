@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 
 describe('Login spec', () => {
-  it('Login successfull', () => {
+  it('Wrong credentials', () => {
     cy.visit('/login')
 
     cy.get('input[formControlName=email]').type("yogazdaa11@studio.com")
