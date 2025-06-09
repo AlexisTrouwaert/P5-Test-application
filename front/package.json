@@ -2,6 +2,8 @@
   "name": "yoga-app",
   "version": "0.0.0",
   "scripts": {
+    "test:integration": "jest --testMatch '**/*.integration.spec.ts'",
+    "test:unit": "jest --testPathIgnorePatterns '.*\\.integration\\.spec\\.ts$'",
     "start": "ng serve",
     "test": "jest",
     "test:watch": "jest --watch",

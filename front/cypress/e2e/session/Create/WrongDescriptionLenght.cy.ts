@@ -28,7 +28,7 @@ describe('Login spec', () => {
     cy.get('mat-select[formcontrolname="teacher_id"]').click();
     cy.get('mat-option').first().click();
     cy.get('textarea[formcontrolname="description"]').invoke('val', longDescription)
-    .trigger('input');;
+    .trigger('input');
 
     cy.get('button[type=submit]').click();
   })
